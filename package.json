@@ -1,0 +1,19 @@
+{
+  "name": "hegemony",
+  "version": "7.1.0",
+  "description": "Grand strategy game on a 3D WebGL globe, from today's world to the stars — a single self-contained HTML file.",
+  "private": true,
+  "scripts": {
+    "build": "node build.js && node i18n/build_en.js && node build.js en",
+    "build:fr": "node build.js",
+    "build:en": "node i18n/build_en.js && node build.js en",
+    "test": "node tests/sim.js && node tests/v6test.js && node tests/v7test.js && node tests/v71test.js && node tests/entest.js",
+    "test:world": "node tests/scn_test.js"
+  },
+  "devDependencies": {
+    "acorn": "^8.11.0",
+    "acorn-walk": "^8.3.0",
+    "all-the-cities": "^3.1.0",
+    "puppeteer-core": "^25.16.0"
+  }
+}

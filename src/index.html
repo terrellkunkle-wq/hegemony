@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hégémonie — de la Terre aux étoiles</title>
+<style>
+:root{--bg:#0a1017;--pan:rgba(10,16,24,.94);--ln:#293746;--tx:#d6dde5;--dim:#8191a2;--or:#e3b341;--rd:#e5534b;--gr:#57ab5a;--bl:#539bf5}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font:13px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden;user-select:none}
+#map,#scv,#glc{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#earth{position:absolute;inset:0;background:#02040b}
+button{font:inherit;color:var(--tx);background:#18222e;border:1px solid var(--ln);padding:3px 8px;cursor:pointer}
+button:hover{background:#223142;border-color:#4a6078}
+button:disabled{opacity:.4;cursor:default}
+button.on{background:var(--or);color:#111;border-color:var(--or)}
+button.w{border-color:var(--rd);color:#ffb4ae}
+button.g{border-color:var(--gr);color:#b4f0b6}
+input,select{font:inherit;color:var(--tx);background:#0e161f;border:1px solid var(--ln);padding:4px 6px}
+.hid{display:none!important}
+.bar{position:absolute;left:0;right:0;top:0;height:38px;background:var(--pan);border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:7px;padding:0 8px;z-index:5;white-space:nowrap;overflow-x:auto;scrollbar-width:none}
+.bar button{padding:2px 6px;flex:none}
+.bar b{font-weight:600}.bar .r{color:var(--dim)}.bar .r b{color:var(--tx)}.bar .sp{flex:1}
+.chip{display:inline-block;width:12px;height:12px;border:1px solid #0008;vertical-align:-1px;margin-right:5px}
+.side{position:absolute;left:0;top:38px;bottom:0;width:300px;background:var(--pan);border-right:1px solid var(--ln);overflow-y:auto;padding:10px;z-index:4}
+.side h2{font-size:16px;margin:0 0 2px;font-weight:600}.side h3{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--or);margin:14px 0 5px;border-bottom:1px solid var(--ln);padding-bottom:2px;font-weight:600}
+.row{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:2px 0}.row span:first-child{color:var(--dim)}
+.btns{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0}
+.dim{color:var(--dim)}.red{color:var(--rd)}.grn{color:var(--gr)}.or{color:var(--or)}
+.mm{position:absolute;left:308px;bottom:8px;z-index:4;background:var(--pan);border:1px solid var(--ln);padding:6px;width:300px}
+body.pre .mm{left:8px}
+.mmh{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:0 0 4px}
+.mmg{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.mmg button{padding:4px 2px}
+.mmglobe{width:100%;margin-top:4px;padding:4px}
+.lgd{display:flex;flex-wrap:wrap;gap:3px 10px;margin-top:6px;font-size:11px;color:var(--dim)}
+.log{position:absolute;right:8px;bottom:8px;width:360px;max-height:190px;overflow:hidden;z-index:3;display:flex;flex-direction:column-reverse;pointer-events:none}
+.log div{background:rgba(8,12,18,.8);border-left:2px solid var(--ln);padding:2px 7px;margin-top:2px;font-size:12px}
+.log div.k1{border-color:var(--rd)}.log div.k2{border-color:var(--gr)}.log div.k3{border-color:var(--or)}
+.modal{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:20;display:flex;align-items:center;justify-content:center}
+.mbox{background:#0d151e;border:1px solid #3a4c5f;max-width:860px;width:calc(100% - 40px);max-height:calc(100% - 60px);overflow:auto;padding:16px 18px}
+.mbox h2{margin:0 0 8px;font-size:18px;font-weight:600}
+table{border-collapse:collapse;width:100%}td,th{padding:3px 6px;text-align:left;border-bottom:1px solid #1b2733}th{color:var(--dim);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+#start{position:absolute;right:0;top:0;bottom:0;width:340px;background:var(--pan);border-left:1px solid var(--ln);z-index:10;padding:16px;display:flex;flex-direction:column;gap:8px}
+#start h1{font-size:26px;letter-spacing:.14em;margin:0;font-weight:700}#start h1 small{display:block;font-size:11px;letter-spacing:.2em;color:var(--or);font-weight:500;margin-top:2px}
+#nlist{flex:1;overflow-y:auto;border:1px solid var(--ln);background:#0c131b}
+#nlist div{padding:3px 8px;cursor:pointer;display:flex;justify-content:space-between}#nlist div:hover{background:#18222e}#nlist div.on{background:#2a3a4c}
+#cheat{position:absolute;right:8px;top:46px;width:310px;max-height:calc(100% - 84px);overflow:auto;background:#150d12f2;border:1px solid #7a3550;z-index:30;padding:10px}
+#cheat h3{margin:8px 0 4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#f08;font-weight:600}
+#cheat button{border-color:#5a2c40;background:#22121a}#cheat button.on{background:#f08;color:#fff}
+#space{position:absolute;inset:0;background:#02030a}
+.tip{font-size:11px;color:var(--dim)}
+.slot{display:flex;justify-content:space-between;padding:3px 6px;border:1px solid var(--ln);margin:2px 0;cursor:pointer}.slot.on{border-color:var(--or);background:#1c2530}
+.cost{font-size:11px;color:var(--dim)}
+#toast{position:absolute;left:50%;top:50px;transform:translateX(-50%);background:#000c;border:1px solid var(--or);padding:6px 14px;z-index:40;pointer-events:none;transition:opacity .4s}
+
+.bar.bot{top:auto;bottom:0;left:300px;height:26px;border-bottom:0;border-top:1px solid var(--ln);border-left:1px solid var(--ln);font-size:12px;gap:12px}
+body:not(.pre) .mm{bottom:34px}body:not(.pre) .log{bottom:34px}
+h3.sec{cursor:pointer}h3.sec:hover{color:#ffd76a}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 10px;position:sticky;top:-16px;background:#0d151e;padding:8px 0;z-index:2}
+.mbox p{margin:6px 0;line-height:1.5}.mbox h3{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--or);margin:14px 0 5px;font-weight:600}
+dl.lex{margin:0;columns:2;column-gap:24px}dl.lex dt{font-weight:600;color:var(--tx);margin-top:6px}dl.lex dd{margin:0 0 4px;color:var(--dim);break-inside:avoid}
+@media(max-width:800px){dl.lex{columns:1}}
+#notif{position:absolute;left:50%;top:46px;transform:translateX(-50%);z-index:6;display:flex;flex-direction:column;gap:4px;width:min(560px,60vw);pointer-events:none}
+.ntf{pointer-events:auto;background:#1b1114ee;border:1px solid #e5534b;border-radius:4px;padding:5px 8px;font-size:12.5px;display:flex;gap:8px;align-items:center}.ntf span{flex:1}.ntf button{padding:1px 7px}
+#replay{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);z-index:6;background:var(--pan);border:1px solid var(--or);border-radius:4px;padding:6px 12px;font-size:13px}
+#selbox{position:absolute;z-index:5;border:1px dashed #ffd24a;background:rgba(255,210,74,.08);pointer-events:none}
+.mm .mmg{grid-template-columns:repeat(3,1fr)}
+.tag{background:#e3b341;color:#111;font-size:10px;font-weight:700;padding:1px 5px;letter-spacing:.06em}
+.cheatb{border-color:#7a3550!important}
+.small{font-size:11px}
+.nb{display:flex;gap:2px;flex-wrap:wrap;justify-content:flex-end}.nb button{padding:2px 5px}
+.compo{font-size:11px;color:var(--dim);margin:4px 0;line-height:1.5}
+.targ{background:#3a1d14;border:1px solid #e5534b;padding:6px;margin-bottom:6px;font-size:12px}
+.tip2{position:fixed;z-index:50;pointer-events:none;background:rgba(8,12,18,.95);border:1px solid #3a4c5f;padding:6px 9px;font-size:12px;max-width:320px;line-height:1.45;box-shadow:0 4px 18px #0008}
+.tip2 b{font-weight:600}
+table.oob td,table.oob th{font-size:11.5px;padding:3px 5px}
+tr.clk{cursor:pointer}tr.clk:hover{background:#18222e}
+#loading{position:absolute;inset:0;z-index:60;background:#02040b;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;letter-spacing:.12em}
+#loading h1{font-size:30px;margin:0;font-weight:700}#loading div{color:var(--dim);letter-spacing:0}
+.log div{pointer-events:auto;cursor:pointer}
+.mbox{max-width:1100px}
+</style>
+</head>
+<body class="pre">
+<div id="earth">
+  <canvas id="glc"></canvas>
+  <canvas id="map"></canvas>
+  <div class="bar hid" id="top"></div>
+  <div class="side hid" id="side"></div>
+  <div class="bar bot hid" id="bot"></div>
+  <div class="mm" id="mm"></div>
+  <div class="log" id="log"></div>
+  <div id="notif"></div><div id="replay" class="hid"></div><div id="selbox" class="hid"></div>
+</div>
+<div id="space" class="hid">
+  <canvas id="scv"></canvas>
+  <div class="bar" id="stop"></div>
+  <div class="side" id="sside"></div>
+  <div class="log" id="slog"></div>
+</div>
+<div id="start">
+  <h1>HÉGÉMONIE<small>DE LA TERRE AUX ÉTOILES</small></h1>
+  <div class="dim">Choisissez une nation sur le globe ou dans la liste (238 nations jouables).</div>
+  <input id="nsearch" placeholder="Rechercher une nation…">
+  <div id="nlist"></div>
+  <div id="npick" style="min-height:112px"></div>
+  <div class="row"><span>Scénario</span><select id="oscn"><option value="std" selected>Monde actuel</option><option value="gp">Grandes puissances</option></select></div>
+  <div class="tip" id="oscnd" style="margin:-2px 0 6px"></div>
+  <div class="row"><span>Agressivité des IA</span><select id="odiff"><option value="0.6">Paisible</option><option value="1" selected>Normale</option><option value="1.5">Belliqueuse</option><option value="2.2">Guerre totale</option></select></div>
+  <div class="row"><span>Victoire à</span><select id="owin"><option value="0.25">25 % de la population mondiale</option><option value="0.5" selected>50 % de la population mondiale</option><option value="0.75">75 % de la population mondiale</option><option value="1">Conquête totale</option></select></div>
+  <label class="row" style="cursor:pointer"><span>Partie test : 4 nations actives, le reste du monde figé</span><input type="checkbox" id="otest"></label>
+  <label class="row" style="cursor:pointer"><span>Mode spectateur : l’IA joue aussi votre nation</span><input type="checkbox" id="oauto"></label>
+  <label class="row" style="cursor:pointer" title="Une puissance nucléaire dont la capitale est menacée lance un ultimatum, puis frappe si le belligérant le rejette ; jamais contre une autre puissance dotée. Désactivé : les IA peuvent tirer leurs ogives sans préavis quand elles sont acculées."><span>Doctrine nucléaire : ultimatum avant toute frappe</span><input type="checkbox" id="odoc" checked></label>
+  <label class="row" style="cursor:pointer"><span>Blocs de départ : Alliance atlantique, OTSC, Conseil du Golfe</span><input type="checkbox" id="ofac"></label>
+  <button id="bplay" class="on" style="padding:8px;font-weight:600" disabled>Commencer</button>
+  <div class="btns"><button id="bload">Reprendre la sauvegarde</button><button id="bimport">Importer un fichier…</button><button id="bdir" title="Choisissez une fois le dossier (par exemple F:\RoN project) : le jeu y écrit ensuite ses sauvegardes automatiques">📁 Dossier</button><button id="bloaddir">Charger depuis le dossier</button><button id="benc">📖 Encyclopédie</button></div>
+  <div class="tip" id="dirlbl"></div>
+  <div class="tip">Glisser : faire tourner · molette ou pincement : zoom jusqu’au sol · clic : sélection · clic droit : ordre de mouvement · M : mode de carte · C : nuages · N : jour/nuit · Espace : pause · F2 : triche</div>
+</div>
+<div id="loading"><h1>HÉGÉMONIE</h1><div id="loadmsg">Chargement…</div></div>
+<div id="tip" class="tip2 hid"></div>
+<div id="cheat" class="hid"></div>
+<div id="modal" class="modal hid"><div class="mbox" id="mbox"></div></div>
+<div id="toast" style="opacity:0"></div>
+<input type="file" id="fimport" class="hid" accept=".json,application/json,text/plain">
+/*__ASSETS__*/
+<script>
+/*__DATA__*/
+</script>
+<script>
+/*__JS__*/
+boot();
+</script>
+</body>
+</html>

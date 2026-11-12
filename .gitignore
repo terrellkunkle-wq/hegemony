@@ -1,0 +1,5 @@
+node_modules/
+i18n/out/
+i18n/strings.json
+tests/shot_*.png
+*.log
